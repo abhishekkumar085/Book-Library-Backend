@@ -1,62 +1,65 @@
+const { StatusCodes } = require('http-status-codes');
 const User = require('../model/user.model.js');
+const { userService } = require('../services');
+const { generateToken } = require('../utils/Jwt.js');
+const {
+  successResponse,
+  customErrorResponse,
+  internalErrorResponse,
+} = require('../utils/common/responseObject.js');
 
 async function createUser(req, res) {
   try {
-    const userData = req.body;
-    const newUser = await User.create(userData);
-    return res.status(201).json({
-      success: true,
-      message: 'User created successfully!',
-      data: newUser,
-    });
+    const newUser = await userService.signupUser(req.body);
+    return res.status(StatusCodes.CREATED).json(
+     successResponse(newUser, 'User created successfully!!')
+    );
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-      error: error.message,
-    });
+    console.log("Error",error);
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalErrorResponse(error));
   }
 }
 
 async function signinUser(req, res) {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { username, password } = req.body;
+    if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Email and Password are required!!',
+        message: 'username and passwords are required!!',
       });
     }
 
-    const user = await User.findOne({ where: { email } });
-    console.log('user', user);
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: 'User not found!!',
-      });
-    }
+    const { user, token } = await userService.signinUser(username, password);
 
-    const isValid = user.ValidPassword(password);
-    if (!isValid) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid Password!!',
-      });
-    }
+    // return res.status(200).json({
+    //   success: true,
+    //   message: 'User signed in successfully!!',
+    //   data: user,
+    //   token,
+    // });
 
-    return res.status(200).json({
-      success: true,
-      message: 'User signed in successfully!!',
-      data: user,
-    });
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse({ user, token }, 'user signed in successfully!!'));
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-      error: error.message,
-    });
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalErrorResponse(error));
+    // return res.status(500).json({
+    //   success: false,
+    //   message: error.message,
+    //   error: {},
+    // });
   }
 }
 

@@ -1,9 +1,10 @@
 const express = require('express');
 const database = require('./config/dbConfig.js');
 const apiRouter = require('./routes/apiRouter.js');
+const { StatusCodes } = require('http-status-codes');
 const app = express();
 // Synchronize the database
-database.sync({ force: false })
+database.sync({ force: false }) //
   .then(() => {
     console.log('Database synchronized');
   })
@@ -16,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', apiRouter);
 
 app.get('/ping', (req, res) => {
-  return res.status(200).send({
+  return res.status(StatusCodes.OK).json({
     success: true,
     message: 'pong',
   });

@@ -1,4 +1,4 @@
-const book = require('../model/book.model.js');
+const book = require('../model/employee.model.js');
 
 async function createBook(req, res) {
   try {

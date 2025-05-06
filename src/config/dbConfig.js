@@ -11,7 +11,8 @@ const sequelize = new Sequelize(
   DATABASE_PASSWORD,
   {
     host: 'localhost',
-    dialect: 'mysql',
+    dialect: 'postgres',
+    logging: false,
   }
 );
 

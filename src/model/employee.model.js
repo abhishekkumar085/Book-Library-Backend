@@ -1,23 +1,28 @@
 const { sequelize, DataTypes } = require('sequelize');
 const db = require('../config/dbConfig.js');
 
-const Book = db.define('books', {
+const Employee = db.define('employee', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
-  title: {
+  firstName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  author: {
+  lastName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  subject: {
+  email: {
     type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true,
+    },
   },
 });
 
-module.exports=Book;
+module.exports = Employee;

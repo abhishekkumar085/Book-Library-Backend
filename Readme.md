@@ -1,6 +1,6 @@
-# Book Library
+# Employee Management
 
-Welcome to the Book Library application! This application allows users to manage a collection of books, including adding, updating, and deleting book entries.
+Welcome to the Employee Management application! This application allows users to manage a collection of books, including adding, updating, and deleting employee entries.
 
 ## Features
 
